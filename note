@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# define variables
+notespath=~/notes
+year=$(date +%Y)
+month=$(date +%m)
+day=$(date +%d)
+hour=$(date +%H)
+minute=$(date +%M)
+second=$(date +%S)
+
+# control year folder
+if [ ! -d "${notespath}/${year}" ]; then
+	echo "${notespath}/${year} directory does not exists. Creating..."
+	mkdir $notespath/$year
+fi
+
+# control month folder
+if [ ! -d "${notespath}/${year}/${month}" ]; then
+	echo "${notespath}/${year}/${month} directory does not exists. Creating..."
+	mkdir $notespath/$year/$month
+fi
+
+# control day folder
+if [ ! -d "${notespath}/${year}/${month}/${day}" ]; then
+	echo "${notespath}/${year}/${month}/${day} directory does not exists. Creating..."
+	mkdir $notespath/$year/$month/$day
+fi
+
+# count files in the folder
+todaysfolder=$notespath/$year/$month/$day
+filecount=$(ls -l "$todaysfolder" | grep -c "^-")
+fileid=$((filecount+1))
+
+# create new file
+filename=$year\_$month\_$day\_$fileid\.md
+filepath=$todaysfolder/$filename
+touch $filepath
+
+# add some meta data
+echo '---' >> $filepath
+echo 'title: ""' >> $filepath
+echo 'date: "'$year'-'$month'-'$day' '$hour':'$minute':'$second'"' >> $filepath
+echo '---' >> $filepath
+echo '' >> $filepath
+
+# start the vim in the second line of newly created file
+vim +2 $filepath
